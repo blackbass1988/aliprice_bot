@@ -9,5 +9,5 @@ pip install -r requirements.txt
 # usage
 
 ```
-KEY=<your_bot_key> python bot.py
+TOKEN=<api:token> python bot.py
 ```
