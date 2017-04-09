@@ -1,10 +1,8 @@
 # coding=utf-8
-import re
-
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, InlineQueryHandler
 
-from lib import get_story, get_link_from_query
+from lib import get_story, get_link_from_query, validate_query, is_digits
 
 import os
 
@@ -20,14 +18,6 @@ https://ru.aliexpress.com/item/seo-url/32750549213.html
 
 invalid_query_text = "неверная ссылка"
 empty_result_message = "поиск не сложился. Попробуйте что-нибудь другое"
-
-
-def validate_query(query):
-    return re.search("aliexpress", query) or is_digits(query)
-
-def is_digits(query):
-    return re.search("^\d+$", query)
-
 
 
 def start(bot, update):
@@ -48,6 +38,8 @@ def inline_hello(bot, update):
         return
     message_text = invalid_query_text
     if validate_query(query):
+        if not is_digits(query):
+            query = get_link_from_query(query)
         story = get_story(query)
         if len(story) > 0:
             message_text = ""
@@ -98,10 +90,9 @@ def error_callback(bot, update, error):
     print error
 
 
-
 key = os.environ.get("KEY")
 
-if (None == key):
+if None == key:
     print "ERROR: KEY environment not set"
     os._exit(1)
 
