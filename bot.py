@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Inlin
 
 from lib import get_story, get_link_from_query, validate_query, is_digits
 
-import os
+import os, sys
 
 hello_message = """
 Здравствуй, путник
@@ -90,13 +90,13 @@ def error_callback(bot, update, error):
     print error
 
 
-key = os.environ.get("KEY")
+token = os.environ.get("TOKEN")
 
-if None == key:
-    print "ERROR: KEY environment not set"
-    os._exit(1)
+if token is None:
+    print "ERROR: TOKEN environment not set; example: TOKEN=<telegram:token> python {}".format(__file__)
+    sys.exit(1)
 
-updater = Updater(key)
+updater = Updater(token)
 
 f = Filters.text
 
